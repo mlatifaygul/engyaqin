@@ -1,103 +1,438 @@
+"use client";
+
 import Image from "next/image";
+import Engbg from "../../public/eng-bg.jpg";
+import garaj from "@/images/garaj.jpg";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [showSecondStep, setShowSecondStep] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const [selectedDistrict, setSelectedDistrict] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const services = [
+    { id: "cekici", name: "Çekici" },
+    { id: "lastikci", name: "Lastikçi" },
+    { id: "coklu-cekici", name: "Çoklu Çekici" },
+    { id: "vinc", name: "Vinç" },
+    { id: "sepetli-vinc-kiralama", name: "Sepetli Vinç Kiralama" },
+    { id: "forklift", name: "Forklift" },
+    { id: "oto-tamirci", name: "Oto Tamirci" },
+    { id: "oto-elektrik", name: "Oto Elektrik" },
+    { id: "aku", name: "Akü" },
+    { id: "oto-ekspertiz", name: "Oto Ekspertiz" },
+    { id: "oto-anahtarci", name: "Oto Anahtarcı" },
+    { id: "evden-eve-nakliyat", name: "Evden Eve Nakliyat" },
+    { id: "şarj-istasyonu", name: "Şarj İstasyonu" },
+    { id: "yakıt-ihmali-destek", name: "Yakıt İhmali Destek" },
+  ];
+
+  const filteredServices = services.filter(service =>
+    service.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const handleShowDropdown = () => {
+    searchValue != "" && setSearchValue("");
+    setTimeout(() => {
+      if (inputRef.current) {
+        const rect = inputRef.current.getBoundingClientRect();
+        setDropdownStyle({
+          position: "absolute",
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+          zIndex: 30,
+        });
+        setShowDropdown(true);
+      }
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (showDropdown && inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "absolute",
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        zIndex: 30,
+      });
+    }
+  }, [showDropdown]);
+
+  return (
+    <div className="bg-[#f7f9fb] min-h-screen w-full pt-16"
+      style={{
+        backgroundImage: `url('/eng-bg.jpg')`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center bottom 740px",
+        backgroundColor: "rgba(0, 0, 0, 0.4)", // Increased opacity to darken the image
+      }}>
+      {showDropdown && (
+        <div
+          style={dropdownStyle}
+          className="bg-white rounded-md shadow-lg max-h-[250px] overflow-auto"
+        >
+          {filteredServices.length > 0 ? (
+            filteredServices.map((service) => (
+              <div
+                key={service.id}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setSearchValue(service.name);
+                  setShowDropdown(false);
+                }}
+              >
+                {service.name}
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-2 text-gray-500">Sonuç bulunamadı</div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      )}
+      <section
+        ref={sectionRef}
+        className="max-w-6xl mx-auto mt-0 mb-8 shadow rounded-xl relative overflow-hidden"
+      >
+        {/* Opak arka plan overlay */}
+        <div className="absolute inset-0 bg-white bg-opacity-80 pointer-events-none rounded-xl" />
+        <div className="relative z-10">
+          {/* Geri butonu - yeni eklenen kısım */}
+          {showSecondStep && (
+            <button
+              onClick={() => setShowSecondStep(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-600 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          )}
+
+          {/* Sekmeler */}
+          <div className="flex flex-wrap gap-2 border-b border-gray-200 px-4 pt-4">
+            <button className="px-4 py-2 font-semibold border-b-2 border-red-600 text-red-600 bg-white">Yurt İçi</button>
+            <button className="px-4 py-2 font-semibold text-gray-600 hover:text-red-600">Yurt Dışı</button>
+          </div>
+          {/* Bilet türü ve form */}
+          <div className="px-4 py-4 flex flex-col gap-4">
+            <div className="flex flex-wrap gap-4 items-center mb-2">
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="biletTipi" defaultChecked className="accent-red-600" />
+                  <span className="font-medium">Tekli</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="biletTipi" className="accent-red-600" />
+                  <span className="font-medium">Çoklu</span>
+                </label>
+              </div>
+            </div>
+            {/* Form alanları */}
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex w-full gap-4">
+                {!showSecondStep ? (
+                  <>
+                    <div className="flex flex-col flex-3 min-w-[150px] relative">
+                      <span className="text-xs text-gray-500 mb-1">Hizmet seçiniz</span>
+                      <div className="relative">
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          value={searchValue}
+                          onChange={(e) => {
+                            setSearchValue(e.target.value);
+                            handleShowDropdown();
+                          }}
+                          onFocus={handleShowDropdown}
+                          placeholder="Hizmet ara..."
+                          className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowSecondStep(true)}
+                      className="flex-1 min-w-[150px] mt-5 bg-red-600 hover:bg-red-700 text-white font-semibold h-12 rounded flex items-center justify-center"
+                    >
+                      Ara <span className="ml-2">→</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col flex-1 min-w-[150px]">
+                      <span className="text-xs text-gray-500 mb-1">İl seçiniz</span>
+                      <select className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full">
+                        <option value="">İl seçiniz</option>
+                        <option value="istanbul">İstanbul</option>
+                        <option value="ankara">Ankara</option>
+                        <option value="izmir">İzmir</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-[150px]">
+                      <span className="text-xs text-gray-500 mb-1">İlçe seçiniz</span>
+                      <select
+                        className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full"
+                        value={selectedDistrict}
+                        onChange={(e) => setSelectedDistrict(e.target.value)}
+                      >
+                        <option value="">İlçe seçiniz</option>
+                        <option value="kadikoy">Kadıköy</option>
+                        <option value="cankaya">Çankaya</option>
+                        <option value="karsiyaka">Karşıyaka</option>
+                      </select>
+                    </div>
+                    <button onClick={() => {
+                      console.log("Hizmet Ara butonuna tıklandı. Seçilen ilçe:", selectedDistrict);
+                      router.push(`/results?district=${selectedDistrict}`);
+                    }} className="flex-1 min-w-[150px] mt-5 bg-red-600 hover:bg-red-700 text-white font-semibold h-12 rounded flex items-center justify-center">
+                      Hizmet Ara <span className="ml-2">→</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Alt ikonlu hizmetler */}
+        </div>
+      </section>
+      {/* Hero Section */}
+      <section className="bg-white rounded-xl flex flex-col-reverse md:flex-row items-center justify-center max-w-6xl mx-auto px-20 py-10 gap-8">
+        <div className="flex-1 flex flex-col items-start justify-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Eng Yaqin "Sen Neredeysen Orada"</h1>
+          <p className="text-gray-800 text-lg mb-6">İhtiyacın olan hizmete kolayca ulaş, bekleyen işlerini hallet</p>
+          <a href="/teklif-al" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition mb-4">Hemen Teklif Al</a>
+        </div>
+        <div className="flex-1 flex justify-center items-center">
+          {/* Placeholder illustration */}
+          <img src="https://www.azes.com.tr/site/o/52071/2020/03/17f606b5d923d7307aa52307ff2757dc.png?1731466" alt="Illustration" width={350} height={250} className="w-[350px] h-auto" />
+        </div>
+      </section>
+
+      {/* Haftanın Trend Hizmetleri */}
+      <section className="bg-white py-10">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">Haftanın Trend Hizmetleri</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Kartlar */}
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/cekici.jpg" alt="Çekici" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Çekici</span>
+              <span className="text-xs text-gray-600 mb-1">1.200 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.8 (10.000 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/lastikci.jpg" alt="Lastikçi" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Lastikçi</span>
+              <span className="text-xs text-gray-600 mb-1">950 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.7 (8.500 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/coklu-cekici.jpg" alt="Çoklu Çekici" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Çoklu Çekici</span>
+              <span className="text-xs text-gray-600 mb-1">500 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.6 (3.200 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/vinc.jpg" alt="Vinç" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Vinç</span>
+              <span className="text-xs text-gray-600 mb-1">700 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.7 (5.000 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/sepetli-vinc.jpg" alt="Sepetli Vinç Kiralama" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Sepetli Vinç Kiralama</span>
+              <span className="text-xs text-gray-600 mb-1">300 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.8 (2.100 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/forklift.jpg" alt="Forklift" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Forklift</span>
+              <span className="text-xs text-gray-600 mb-1">400 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.7 (2.800 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/oto-tamirci.jpg" alt="Oto Tamirci" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Oto Tamirci</span>
+              <span className="text-xs text-gray-600 mb-1">1.100 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.9 (9.000 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/oto-elektrik.jpg" alt="Oto Elektrik" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Oto Elektrik</span>
+              <span className="text-xs text-gray-600 mb-1">800 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.8 (6.500 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/aku.jpg" alt="Akü" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Akü</span>
+              <span className="text-xs text-gray-600 mb-1">600 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.7 (4.000 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/oto-ekspertiz.jpg" alt="Oto Ekspertiz" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Oto Ekspertiz</span>
+              <span className="text-xs text-gray-600 mb-1">900 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.8 (7.200 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/oto-anahtarci.jpg" alt="Oto Anahtarcı" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Oto Anahtarcı</span>
+              <span className="text-xs text-gray-600 mb-1">500 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.7 (3.800 onaylı yorum)</span>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src="https://i.ibb.co/0j1n6kB/evdeneve.jpg" alt="Evden Eve Nakliyat" className="rounded-md h-32 object-cover mb-3" />
+              <span className="font-semibold text-green-700 mb-1">Evden Eve Nakliyat</span>
+              <span className="text-xs text-gray-600 mb-1">2.693 profesyonel</span>
+              <span className="text-xs text-gray-500">⭐ 4.9 (165.393 onaylı yorum)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Clients */}
+      <section className="bg-white py-10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-2 text-gray-800">Hızlı İşlemler</h2>
+          <p className="text-gray-500 mb-6">Hızlı işlemler için hizmetlerimiz</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 mb-2">
+            {/* Placeholder logos */}
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/mV2WdwVT/garaj.jpg" alt="Garaj seçimi" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Garaj seçimi</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/ymGzQxjX/lastikci-bul.jpg" alt="Çekici Bul" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Çekici Bul</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/NgX80MqX/cekici-bul.jpg" alt="Lastikçi Bul" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Lastikçi Bul</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/rfqMywKg/uyelerimiz.jpg" alt="Sık Sorulanlar" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Sık Sorulanlar</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/5xxHJdjB/s-sorulanlar.jpg" alt="Üyelerimiz" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Üyelerimiz</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <img src="https://i.ibb.co/4gD05MTg/duyurular.jpg" alt="Duyurular" width={64} height={64} className="text-2xl" />
+              <span className="text-xs font-semibold text-gray-700">Duyurular</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Başarılı İşletmeler Slider'ı */}
+      <section className="py-16 bg-[#f7f9fb]">
+        <div className="max-w-6xl mx-auto text-center mb-12">
+          <h2 className="text-3xl font-bold mb-2 text-gray-900">Başarılı İşletmeler</h2>
+          <p className="text-gray-500">Müşterilerimizin memnuniyeti bizim için önemlidir.</p>
+        </div>
+        <div className="max-w-6xl mx-auto overflow-x-auto scrollbar-hide">
+          <div className="flex space-x-6 pb-4 px-4">
+            {/* İşletme Kartı 1 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 1" width="64" className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">ABC İnşaat</h3>
+              <p className="text-gray-600 text-sm">Büyük ölçekli inşaat projelerinde güvenilir ortağınız.</p>
+            </div>
+            {/* İşletme Kartı 2 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 2" width="64" className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">XYZ Lojistik</h3>
+              <p className="text-gray-600 text-sm">Hızlı ve güvenli taşımacılık çözümleri.</p>
+            </div>
+            {/* İşletme Kartı 3 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 3" width="64" className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Defne Restoran</h3>
+              <p className="text-gray-600 text-sm">Lezzetli yemekler ve sıcacık bir atmosfer.</p>
+            </div>
+            {/* İşletme Kartı 4 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 4" width="64" className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Elif Temizlik</h3>
+              <p className="text-gray-600 text-sm">Profesyonel ve titiz temizlik hizmetleri.</p>
+            </div>
+            {/* İşletme Kartı 5 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 5" width="64" className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Modern Yazılım</h3>
+              <p className="text-gray-600 text-sm">Yenilikçi yazılım çözümleri geliştiriyoruz.</p>
+            </div>
+            {/* Daha fazla kart eklenebilir */}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-10">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-bold mb-4">Eng Yaqin</h3>
+            <p className="text-gray-400 text-sm">İhtiyacın olan hizmete kolayca ulaş, bekleyen işlerini hallet.</p>
+          </div>
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-bold mb-4">Hızlı Bağlantılar</h3>
+            <ul className="space-y-2">
+              <li><a href="/hizmetler" className="text-gray-400 hover:text-white transition-colors">Hizmetler</a></li>
+              <li><a href="/teklif-al" className="text-gray-400 hover:text-white transition-colors">Teklif Al</a></li>
+              <li><a href="/hakkimizda" className="text-gray-400 hover:text-white transition-colors">Hakkımızda</a></li>
+              <li><a href="/iletisim" className="text-gray-400 hover:text-white transition-colors">İletişim</a></li>
+            </ul>
+          </div>
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-bold mb-4">Bizi Takip Edin</h3>
+            <div className="flex justify-center md:justify-start space-x-4">
+              <a href="https://wa.me/YOUR_PHONE_NUMBER?text=Merhaba,%20hizmetleriniz%20hakkında%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M.057 24l1.687-6.163c-1.041-1.102-1.602-2.585-1.602-4.148C.142 6.837 5.093 1.905 11.206 1.905c3.551 0 6.643 1.704 8.618 4.298l.006.006c2.316 2.457 2.316 5.679.006 8.136l-.006.006c-1.975 2.594-5.067 4.298-8.618 4.298-1.563 0-3.046-.561-4.148-1.602l-6.163 1.687L.057 24zm6.052-7.854l-1.687.461 4.542 4.542c1.157.316 2.359.485 3.594.485 5.093 0 9.222-4.129 9.222-9.222S16.3 2.68 11.207 2.68c-5.093 0-9.222 4.129-9.222 9.222 0 1.235.169 2.437.485 3.594l4.542 4.542-.461-1.687zM8.47 13.579c.14-.14.281-.299.422-.44.561-.58.74-.91.954-1.281 0-.14.07-.35.14-.56.07-.21.105-.42.105-.63 0-.42-.07-.74-.21-1.01-.14-.28-.35-.49-.63-.63-.28-.14-.56-.21-.84-.21-.21 0-.39.04-.54.12-.14.07-.28.14-.42.21-.14.07-.25.105-.335.105-.084 0-.19-.015-.31-.045-.12-.03-.23-.075-.33-.135-.21-.1-.38-.2-.51-.3-.24-.16-.36-.21-.42-.21-.14 0-.25.035-.33.105-.08.07-.12.14-.12.21 0 .28.24.49.71.63.47.14.77.299.909.479.14.18.281.42.422.71.14.29.21.56.21.82 0 .21-.035.39-.105.54-.07.14-.14.24-.21.3-.07.07-.1.084-.105.084-.045.015-.12.045-.225.09-.105.045-.225.075-.36.09-.14.015-.28.02-.42.02-.21 0-.42-.035-.63-.105-.21-.07-.42-.14-.63-.21-.21-.07-.42-.105-.63-.105-.42 0-.74.14-.95.42-.21.28-.31.59-.31.95 0 .14.015.35.045.63.03.28.075.54.135.78.06.24.14.47.24.69.1.22.21.43.33.63.12.2.22.3.3.3.14.14.28.21.42.21.21 0 .45-.07.71-.21.26-.14.49-.31.69-.51.2-.2.38-.42.54-.64.16-.22.29-.44.4-.64.12-.2.23-.39.33-.56.1-.17.15-.28.15-.33z"/>
+                </svg>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm5.723 6.095c-.292-.129-.623-.217-.978-.258C14.28 7.55 12 7.55 12 7.55s-2.28 0-4.745.282c-.355.041-.686.129-.978.258-2.613 1.157-2.613 5.486-2.613 5.486s0 4.329 2.613 5.486c.292.129.623.217.978.258 2.465.282 4.745.282 4.745.282s2.28 0 4.745-.282c.355-.041.686-.129.978-.258 2.613-1.157 2.613-5.486 2.613-5.486s0-4.329-2.613-5.486zM10 15.5v-7l5 3.5-5 3.5z"/></svg></a>
+              <a href="#" className="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.706 6.551c-.161.08-.33.14-.5.185-.18.045-.367.067-.55.067-.28 0-.55-.067-.8-.2-.25-.133-.46-.317-.63-.55-.17-.233-.25-.517-.25-.85 0-.317.083-.6.25-.85.167-.25.383-.433.65-.55.267-.117.567-.175.9-.175.333 0 .617.058.85.175.233.117.4.283.5.5.1.217.15.45.15.7-.001.25-.05.483-.15.7-.1.217-.267.383-.5.5zm-1.849 5.867c-.2-.04-.4-.06-.6-.06-.31 0-.59.06-.84.18-.25.12-.46.29-.63.51-.17.22-.25.48-.25.78 0 .28.08.53.24.75.16.22.37.38.63.48.26.1.55.15.86.15.31 0 .59-.05.84-.15.25-.1.46-.26.63-.48.17-.22.25-.47.25-.75 0-.3-.08-.56-.24-.78-.16-.22-.37-.39-.63-.51zm-2.091-6.418c-1.391 0-2.521 1.13-2.521 2.521s1.13 2.521 2.521 2.521 2.521-1.13 2.521-2.521-1.13-2.521-2.521-2.521z"/></svg></a>
+            </div>
+          </div>
+        </div>
+        <div className="text-center text-gray-500 mt-8 text-sm">
+          &copy; {new Date().getFullYear()} Eng Yaqin. Tüm Hakları Saklıdır.
+        </div>
       </footer>
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/905xxxxxxxxx?text=Merhaba,%20hizmetleriniz%20hakkında%20bilgi%20almak%20istiyorum."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors z-50"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M.057 24l1.687-6.163c-1.041-1.102-1.602-2.585-1.602-4.148C.142 6.837 5.093 1.905 11.206 1.905c3.551 0 6.643 1.704 8.618 4.298l.006.006c2.316 2.457 2.316 5.679.006 8.136l-.006.006c-1.975 2.594-5.067 4.298-8.618 4.298-1.563 0-3.046-.561-4.148-1.602l-6.163 1.687L.057 24zm6.052-7.854l-1.687.461 4.542 4.542c1.157.316 2.359.485 3.594.485 5.093 0 9.222-4.129 9.222-9.222S16.3 2.68 11.207 2.68c-5.093 0-9.222 4.129-9.222 9.222 0 1.235.169 2.437.485 3.594l4.542 4.542-.461-1.687zM8.47 13.579c.14-.14.281-.299.422-.44.561-.58.74-.91.954-1.281 0-.14.07-.35.14-.56.07-.21.105-.42.105-.63 0-.42-.07-.74-.21-1.01-.14-.28-.35-.49-.63-.63-.28-.14-.56-.21-.84-.21-.21 0-.39.04-.54.12-.14.07-.28.14-.42.21-.14.07-.25.105-.335.105-.084 0-.19-.015-.31-.045-.12-.03-.23-.075-.33-.135-.21-.1-.38-.2-.51-.3-.24-.16-.36-.21-.42-.21-.14 0-.25.035-.33.105-.08.07-.12.14-.12.21 0 .28.24.49.71.63.47.14.77.299.909.479.14.18.281.42.422.71.14.29.21.56.21.82 0 .21-.035.39-.105.54-.07.14-.14.24-.21.3-.07.07-.1.084-.105.084-.045.015-.12.045-.225.09-.105.045-.225.075-.36.09-.14.015-.28.02-.42.02-.21 0-.42-.035-.63-.105-.21-.07-.42-.14-.63-.21-.21-.07-.42-.105-.63-.105-.42 0-.74.14-.95.42-.21.28-.31.59-.31.95 0 .14.015.35.045.63.03.28.075.54.135.78.06.24.14.47.24.69.1.22.21.43.33.63.12.2.22.3.3.3.14.14.28.21.42.21.21 0 .45-.07.71-.21.26-.14.49-.31.69-.51.2-.2.38-.42.54-.64.16-.22.29-.44.4-.64.12-.2.23-.39.33-.56.1-.17.15-.28.15-.33z"/>
+        </svg>
+      </a>
     </div>
   );
 }
