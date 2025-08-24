@@ -35,7 +35,10 @@ export default function RootLayout({
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
                 <Image src={Engicon} alt="Engyaqin Logo" width={24} height={24} />
               </div>
-              <span className="ml-2 text-xl font-bold text-gray-800">Engyaqin</span>
+              <span className="ml-2 text-xl font-bold text-gray-800">
+                <span style={{ fontFamily: "Arial, sans-serif", fontStyle: "inherit" }}>eng yaqin</span>
+                
+              </span>
             </a>
           </div>
           <div className="flex items-center gap-6">

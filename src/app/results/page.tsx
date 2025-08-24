@@ -18,7 +18,8 @@ export default function Results() {
       location: "Küçükçekmece",
       reviewCount: 1,
       image: "https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg", // Placeholder image
-      contactType: "sms"
+      phoneNumber: "0850 346 29 54",
+      telegramUsername: "ozkardeslerlastik"
     },
     {
       id: 2,
@@ -31,7 +32,8 @@ export default function Results() {
       reviewCount: 1,
       image: "https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg", // Placeholder image
       contactType: "phone",
-      phoneNumber: "0850 346 29 54"
+      phoneNumber: "0850 346 29 54",
+      telegramUsername: "ozkardeslerlastik"
     },
     // Daha fazla şirket eklenebilir
   ];
@@ -104,12 +106,30 @@ export default function Results() {
                   SMS Gönder
                 </button>
               ) : (
-                <a href={`tel:${company.phoneNumber}`} className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center justify-center w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.855l.342 1.714a1 1 0 01-.313.904l-1.293 1.293a1 1 0 00-.293.707v2.286c0 .341.161.666.444.869l3.57 2.585a1 1 0 001.12.008l2.585-3.571a1 1 0 00.868-.444l1.293-1.293a1 1 0 01.904-.313l1.714.342A1 1 0 0119 12v2.153a1 1 0 01-.855.986l-1.714.342a1 1 0 01-.904-.313l-1.293-1.293a1 1 0 00-.707-.293H12a1 1 0 00-.707.293L8.003 14.5a1 1 0 000 1.414l1.293 1.293a1 1 0 01.313.904l-.342 1.714A1 1 0 0112 21H3a1 1 0 01-1-1v-2.153a1 1 0 01.855-.986l1.714-.342a1 1 0 01.904.313l1.293 1.293a1 1 0 00.707.293H10a1 1 0 00.707-.293L13.5 16.5a1 1 0 000-1.414L12.207 13.5a1 1 0 01-.313-.904L12.378 10.5a1 1 0 01-.869-.444L8.003 7.5a1 1 0 00-1.12-.008L4.3 9.585a1 1 0 00-.868.444L2.139 11.23a1 1 0 01-.904.313L2 3z" />
-                  </svg>
-                  {company.phoneNumber}
-                </a>
+                <>
+                  <a href={`tel:${company.phoneNumber}`} className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center justify-center w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.855l.342 1.714a1 1 0 01-.313.904l-1.293 1.293a1 1 0 00-.293.707v2.286c0 .341.161.666.444.869l3.57 2.585a1 1 0 001.12.008l2.585-3.571a1 1 0 00.868-.444l1.293-1.293a1 1 0 01.904-.313l1.714.342A1 1 0 0119 12v2.153a1 1 0 01-.855.986l-1.714.342a1 1 0 01-.904-.313l-1.293-1.293a1 1 0 00-.707-.293H12a1 1 0 00-.707.293L8.003 14.5a1 1 0 000 1.414l1.293 1.293a1 1 0 01.313.904l-.342 1.714A1 1 0 0112 21H3a1 1 0 01-1-1v-2.153a1 1 0 01.855-.986l1.714-.342a1 1 0 01.904.313l1.293 1.293a1 1 0 00.707.293H10a1 1 0 00.707-.293L13.5 16.5a1 1 0 000-1.414L12.207 13.5a1 1 0 01-.313-.904L12.378 10.5a1 1 0 01-.869-.444L8.003 7.5a1 1 0 00-1.12-.008L4.3 9.585a1 1 0 00-.868.444L2.139 11.23a1 1 0 01-.904.313L2 3z" />
+                    </svg>
+                    {company.phoneNumber}
+                  </a>
+                  {company.telegramUsername && (
+                    <a
+                      href={`https://t.me/${company.telegramUsername}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg flex items-center justify-center w-full"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9.036 16.569c-.396 0-.327-.15-.462-.528l-1.152-3.792 8.928-5.304"/>
+                        <path d="M9.036 16.569c.306 0 .441-.141.612-.297l1.656-1.602-2.064-1.254"/>
+                        <path d="M9.036 16.569c.225 0 .324-.102.45-.21l4.104-3.726"/>
+                        <path d="M21.543 5.341c-.225-.183-.549-.225-.819-.09l-17.25 7.875c-.285.129-.465.42-.441.732.024.312.24.573.537.642l4.41 1.05 1.65 5.01c.09.273.342.456.627.456.06 0 .12-.009.18-.027.315-.09 5.355-3.54 7.5-5.01 1.14-.765 2.1-1.62 2.1-2.565 0-.99-.885-1.44-1.344-1.62z"/>
+                      </svg>
+                      Telegram ile Mesaj Gönder
+                    </a>
+                  )}
+                </>
               )}
             </div>
           </div>

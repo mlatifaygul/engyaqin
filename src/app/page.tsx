@@ -6,6 +6,124 @@ import garaj from "@/images/garaj.jpg";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+const cityDistricts: { [key: string]: { value: string; label: string }[] } = {
+  istanbul: [
+    { value: "adalar", label: "Adalar" },
+    { value: "arnavutkoy", label: "Arnavutköy" },
+    { value: "atasehir", label: "Ataşehir" },
+    { value: "avcilar", label: "Avcılar" },
+    { value: "bagcilar", label: "Bağcılar" },
+    { value: "bahcelievler", label: "Bahçelievler" },
+    { value: "bakirkoy", label: "Bakırköy" },
+    { value: "basaksehir", label: "Başakşehir" },
+    { value: "bayrampasa", label: "Bayrampaşa" },
+    { value: "besiktas", label: "Beşiktaş" },
+    { value: "beykoz", label: "Beykoz" },
+    { value: "beylikduzu", label: "Beylikdüzü" },
+    { value: "beyoglu", label: "Beyoğlu" },
+    { value: "buyukcekmece", label: "Büyükçekmece" },
+    { value: "catalca", label: "Çatalca" },
+    { value: "cekmece", label: "Çekmeköy" },
+    { value: "esenler", label: "Esenler" },
+    { value: "esenyurt", label: "Esenyurt" },
+    { value: "eyupsultan", label: "Eyüpsultan" },
+    { value: "fatih", label: "Fatih" },
+    { value: "gaziosmanpasa", label: "Gaziosmanpaşa" },
+    { value: "gungoren", label: "Güngören" },
+    { value: "kadikoy", label: "Kadıköy" },
+    { value: "kagithane", label: "Kağıthane" },
+    { value: "kartal", label: "Kartal" },
+    { value: "kucukcekmece", label: "Küçükçekmece" },
+    { value: "maltepe", label: "Maltepe" },
+    { value: "pendik", label: "Pendik" },
+    { value: "sancaktepe", label: "Sancaktepe" },
+    { value: "sariyer", label: "Sarıyer" },
+    { value: "silivri", label: "Silivri" },
+    { value: "sultanbeyli", label: "Sultanbeyli" },
+    { value: "sultangazi", label: "Sultangazi" },
+    { value: "sile", label: "Şile" },
+    { value: "sisli", label: "Şişli" },
+    { value: "tuzla", label: "Tuzla" },
+    { value: "umraniye", label: "Ümraniye" },
+    { value: "uskudar", label: "Üsküdar" },
+    { value: "zeytinburnu", label: "Zeytinburnu" },
+  ],
+  ankara: [
+    { value: "akyurt", label: "Akyurt" },
+    { value: "altindag", label: "Altındağ" },
+    { value: "ayas", label: "Ayaş" },
+    { value: "beypazari", label: "Beypazarı" },
+    { value: "cankaya", label: "Çankaya" },
+    { value: "cubuk", label: "Çubuk" },
+    { value: "elmadag", label: "Elmadağ" },
+    { value: "etimesgut", label: "Etimesgut" },
+    { value: "evren", label: "Evren" },
+    { value: "golbasi", label: "Gölbaşı" },
+    { value: "gudul", label: "Güdül" },
+    { value: "haymana", label: "Haymana" },
+    { value: "kalecik", label: "Kalecik" },
+    { value: "kecioren", label: "Keçiören" },
+    { value: "kizilcahamam", label: "Kızılcahamam" },
+    { value: "mamamk", label: "Mamak" },
+    { value: "nallihan", label: "Nallıhan" },
+    { value: "polatli", label: "Polatlı" },
+    { value: "pursaklar", label: "Pursaklar" },
+    { value: "sereflikochisar", label: "Şereflikoçhisar" },
+    { value: "sincan", label: "Sincan" },
+    { value: "yenimahalle", label: "Yenimahalle" },
+  ],
+  izmir: [
+    { value: "alacati", label: "Alaçatı" },
+    { value: "aliaga", label: "Aliağa" },
+    { value: "balcova", label: "Balçova" },
+    { value: "bayindir", label: "Bayındır" },
+    { value: "bayrakli", label: "Bayraklı" },
+    { value: "bergama", label: "Bergama" },
+    { value: "beydag", label: "Beydağ" },
+    { value: "bornova", label: "Bornova" },
+    { value: "buca", label: "Buca" },
+    { value: "cesme", label: "Çeşme" },
+    { value: "cigli", label: "Çiğli" },
+    { value: "dikili", label: "Dikili" },
+    { value: "foca", label: "Foça" },
+    { value: "gaziemir", label: "Gaziemir" },
+    { value: "guzelbahce", label: "Güzelbahçe" },
+    { value: "karabaglar", label: "Karabağlar" },
+    { value: "karaburun", label: "Karaburun" },
+    { value: "karsiyaka", label: "Karşıyaka" },
+    { value: "kemalpasa", label: "Kemalpaşa" },
+    { value: "kinik", label: "Kınık" },
+    { value: "kiraz", label: "Kiraz" },
+    { value: "konak", label: "Konak" },
+    { value: "menderes", label: "Menderes" },
+    { value: "menemen", label: "Menemen" },
+    { value: "narlidere", label: "Narlıdere" },
+    { value: "odemis", label: "Ödemiş" },
+    { value: "seferihisar", label: "Seferihisar" },
+    { value: "selcuk", label: "Selçuk" },
+    { value: "tire", label: "Tire" },
+    { value: "torbali", label: "Torbalı" },
+    { value: "urla", label: "Urla" },
+  ],
+};
+
+const dummyCars = [
+  {
+    id: 1,
+    brand: "Volkswagen",
+    model: "Passat",
+    plate: "34 ABC 123",
+    image: "/Engicon.png", // public klasöründen örnek görsel
+  },
+  {
+    id: 2,
+    brand: "Renault",
+    model: "Clio",
+    plate: "06 XYZ 456",
+    image: "/Engicon.png",
+  },
+];
+
 export default function Home() {
   const [showSecondStep, setShowSecondStep] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -14,7 +132,10 @@ export default function Home() {
   const [dropdownStyle, setDropdownStyle] = useState({});
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  const [cars, setCars] = useState(dummyCars);
 
   const services = [
     { id: "cekici", name: "Çekici" },
@@ -38,7 +159,6 @@ export default function Home() {
   );
 
   const handleShowDropdown = () => {
-    searchValue != "" && setSearchValue("");
     setTimeout(() => {
       if (inputRef.current) {
         const rect = inputRef.current.getBoundingClientRect();
@@ -66,6 +186,69 @@ export default function Home() {
       });
     }
   }, [showDropdown]);
+
+  const handleFindLocation = async () => {
+    setLoadingLocation(true);
+    if (!navigator.geolocation) {
+      alert("Tarayıcınız konum bulmayı desteklemiyor.");
+      setLoadingLocation(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=tr`
+          );
+          const data = await response.json();
+          console.log("data", data);
+          
+          const city = data.address.province || data.address.city || data.address.state || "";
+          const district = data.address.county || data.address.town || data.address.village || "";
+          console.log("city", city);
+          console.log("district", district);
+          
+
+          let cityKey = "";
+          if (city.includes("İstanbul")) cityKey = "istanbul";
+          else if (city.includes("Ankara")) cityKey = "ankara";
+          else if (city.includes("İzmir")) cityKey = "izmir";
+
+          if (cityKey) setSelectedCity(cityKey);
+          if (cityKey && district) {
+            const districtValue = matchDistrict(cityKey, district);
+            if (districtValue) setSelectedDistrict(districtValue);
+          }
+        } catch (err) {
+          alert("Konumdan il/ilçe alınamadı.");
+        }
+        setLoadingLocation(false);
+      },
+      (error) => {
+        alert("Konum alınamadı: " + error.message);
+        setLoadingLocation(false);
+      }
+    );
+  };
+
+  const matchDistrict = (cityKey: string, districtName: string) => {
+    const found = cityDistricts[cityKey]?.find(d =>
+      d.label.toLowerCase().replace(/ı/g, "i") === districtName.toLowerCase().replace(/ı/g, "i")
+    );
+    return found?.value || "";
+  };
+
+  useEffect(() => {
+    setSelectedDistrict("");
+  }, [selectedCity]);
+
+  useEffect(() => {
+    if (selectedCity && selectedDistrict && loadingLocation === false) {
+      router.push(`/results?district=${selectedDistrict}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCity, selectedDistrict, loadingLocation]);
 
   return (
     <div className="bg-[#f7f9fb] min-h-screen w-full pt-16"
@@ -118,6 +301,21 @@ export default function Home() {
             </button>
           )}
 
+          {/* İl/ilçe seçim menüsünün SAĞ ÜSTÜNE konum butonu */}
+          {showSecondStep && (
+            <button
+              onClick={handleFindLocation}
+              className="absolute top-4 right-16 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded flex items-center gap-2"
+              disabled={loadingLocation}
+              title="Konumumu Bul"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 2a1 1 0 0 1 1 1v1.07A8.001 8.001 0 0 1 20.93 11H22a1 1 0 1 1 0 2h-1.07A8.001 8.001 0 0 1 13 20.93V22a1 1 0 1 1-2 0v-1.07A8.001 8.001 0 0 1 3.07 13H2a1 1 0 1 1 0-2h1.07A8.001 8.001 0 0 1 11 3.07V2a1 1 0 0 1 1-1Zm0 4a6 6 0 1 0 0 12A6 6 0 0 0 12 6Z"/>
+              </svg>
+              {loadingLocation ? "Bulunuyor..." : "Konumumu Bul"}
+            </button>
+          )}
+
           {/* Sekmeler */}
           <div className="flex flex-wrap gap-2 border-b border-gray-200 px-4 pt-4">
             <button className="px-4 py-2 font-semibold border-b-2 border-red-600 text-red-600 bg-white">Yurt İçi</button>
@@ -154,6 +352,7 @@ export default function Home() {
                             handleShowDropdown();
                           }}
                           onFocus={handleShowDropdown}
+                          onClick={()=> searchValue != "" && setSearchValue("")}
                           placeholder="Hizmet ara..."
                           className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full"
                         />
@@ -170,7 +369,14 @@ export default function Home() {
                   <>
                     <div className="flex flex-col flex-1 min-w-[150px]">
                       <span className="text-xs text-gray-500 mb-1">İl seçiniz</span>
-                      <select className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full">
+                      <select
+                        className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full"
+                        value={selectedCity}
+                        onChange={(e) => {
+                          setSelectedCity(e.target.value);
+                          setSelectedDistrict(""); // İl değişince ilçe sıfırlansın
+                        }}
+                      >
                         <option value="">İl seçiniz</option>
                         <option value="istanbul">İstanbul</option>
                         <option value="ankara">Ankara</option>
@@ -183,11 +389,15 @@ export default function Home() {
                         className="bg-gray-100 rounded px-4 h-12 font-semibold text-gray-800 focus:outline-none w-full"
                         value={selectedDistrict}
                         onChange={(e) => setSelectedDistrict(e.target.value)}
+                        disabled={!selectedCity}
                       >
                         <option value="">İlçe seçiniz</option>
-                        <option value="kadikoy">Kadıköy</option>
-                        <option value="cankaya">Çankaya</option>
-                        <option value="karsiyaka">Karşıyaka</option>
+                        {selectedCity &&
+                          cityDistricts[selectedCity]?.map((district) => (
+                            <option key={district.value} value={district.value}>
+                              {district.label}
+                            </option>
+                          ))}
                       </select>
                     </div>
                     <button onClick={() => {
