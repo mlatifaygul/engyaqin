@@ -14,6 +14,9 @@ export default function HizmetVer() {
     email: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
+
   // Hizmetler/Sektörler listesi
   const sektorler = [
     { id: "cekici", name: "Çekici" },
@@ -54,9 +57,45 @@ export default function HizmetVer() {
   };
 
   // Form submit
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Başvurunuz alınmıştır!");
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch('/api/service-provider', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitMessage("Başvurunuz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.");
+        // Formu temizle
+        setForm({
+          ad: "",
+          soyad: "",
+          firma: "",
+          sektor: "",
+          il: "",
+          ilce: "",
+          gsm: "",
+          email: "",
+        });
+        setSektorSearch("");
+      } else {
+        setSubmitMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
+      }
+    } catch (error) {
+      console.error('Form gönderme hatası:', error);
+      setSubmitMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Dropdown dışına tıklanınca kapat
@@ -83,6 +122,17 @@ export default function HizmetVer() {
     <div className="min-h-screen flex items-center justify-center bg-[#f7f9fb] py-12 px-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg relative mb-16">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Hizmet Vermek İstiyorum</h2>
+        
+        {submitMessage && (
+          <div className={`mb-4 p-3 rounded-md text-sm ${
+            submitMessage.includes("başarıyla") 
+              ? "bg-green-100 text-green-700 border border-green-300" 
+              : "bg-red-100 text-red-700 border border-red-300"
+          }`}>
+            {submitMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-4">
             <div className="flex-1">
@@ -212,9 +262,14 @@ export default function HizmetVer() {
           </div>
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded transition"
+            disabled={isSubmitting}
+            className={`w-full font-semibold py-3 rounded transition ${
+              isSubmitting 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-orange-500 hover:bg-orange-600 text-white"
+            }`}
           >
-            Başvuruyu Gönder
+            {isSubmitting ? "Gönderiliyor..." : "Başvuruyu Gönder"}
           </button>
         </form>
       </div>

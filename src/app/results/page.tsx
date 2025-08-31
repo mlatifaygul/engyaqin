@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function Results() {
+function ResultsContent() {
   const searchParams = useSearchParams();
   const district = searchParams.get('district') || 'Genel';
+  const service = searchParams.get('service') || 'Hizmet';
 
   const companies = [
     {
@@ -43,7 +45,7 @@ export default function Results() {
       {/* Bilgilendirme Bannerı */}
       <div className="max-w-4xl mx-auto bg-yellow-100 border border-yellow-300 text-yellow-800 px-6 py-4 rounded-lg text-center mb-8">
         <p className="font-semibold">
-          {district} yakınlarında <span className="font-bold">4 Lastikçi</span> firması bulunmaktadır.
+          {district} yakınlarında <span className="font-bold">{companies.length} {service}</span> firması bulunmaktadır.
         </p>
       </div>
 
@@ -53,9 +55,11 @@ export default function Results() {
           <div key={company.id} className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
             {/* Profil Resmi ve Yorum */}
             <div className="flex flex-col items-center flex-shrink-0">
-              <img
+              <Image
                 src={company.image}
                 alt={company.name}
+                width={96}
+                height={96}
                 className="w-24 h-24 rounded-full object-cover"
               />
               <span className="mt-2 text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
@@ -136,5 +140,24 @@ export default function Results() {
         ))}
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#f7f9fb] py-8 px-4 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Sonuçlar yükleniyor...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function Results() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResultsContent />
+    </Suspense>
   );
 }

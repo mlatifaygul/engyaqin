@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const fakeData = [
   {
@@ -78,9 +79,11 @@ export default function Garaj() {
                     {item.teklif} Teklif Verildi
                   </span>
                 )}
-                <img
+                <Image
                   src="/Engicon.png"
                   alt="Çekici"
+                  width={28}
+                  height={28}
                   className="w-7 h-7 object-contain ml-2"
                 />
               </div>

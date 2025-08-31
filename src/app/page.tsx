@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Engbg from "../../public/eng-bg.jpg";
-import garaj from "@/images/garaj.jpg";
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -107,25 +106,7 @@ const cityDistricts: { [key: string]: { value: string; label: string }[] } = {
   ],
 };
 
-const dummyCars = [
-  {
-    id: 1,
-    brand: "Volkswagen",
-    model: "Passat",
-    plate: "34 ABC 123",
-    image: "/Engicon.png", // public klasöründen örnek görsel
-  },
-  {
-    id: 2,
-    brand: "Renault",
-    model: "Clio",
-    plate: "06 XYZ 456",
-    image: "/Engicon.png",
-  },
-];
-
 export default function Home() {
-  const [showSecondStep, setShowSecondStep] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -135,7 +116,6 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [loadingLocation, setLoadingLocation] = useState(false);
-  const [cars, setCars] = useState(dummyCars);
 
   const services = [
     { id: "cekici", name: "Çekici" },
@@ -220,7 +200,7 @@ export default function Home() {
             const districtValue = matchDistrict(cityKey, district);
             if (districtValue) setSelectedDistrict(districtValue);
           }
-        } catch (err) {
+        } catch {
           alert("Konumdan il/ilçe alınamadı.");
         }
         setLoadingLocation(false);
@@ -243,22 +223,15 @@ export default function Home() {
     setSelectedDistrict("");
   }, [selectedCity]);
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (selectedCity && selectedDistrict && loadingLocation === false) {
       router.push(`/results?district=${selectedDistrict}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCity, selectedDistrict, loadingLocation]);
+  }, [selectedCity, selectedDistrict, loadingLocation]); */
 
   return (
-    <div className="bg-[#f7f9fb] min-h-screen w-full pt-16"
-      style={{
-        backgroundImage: `url('/eng-bg.jpg')`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center bottom 740px",
-        backgroundColor: "rgba(0, 0, 0, 0.4)", // Increased opacity to darken the image
-      }}>
+    <div className="min-h-screen bg-[#f7f9fb]">
       {showDropdown && (
         <div
           style={dropdownStyle}
@@ -290,19 +263,15 @@ export default function Home() {
         <div className="absolute inset-0 bg-white bg-opacity-80 pointer-events-none rounded-xl" />
         <div className="relative z-10">
           {/* Geri butonu - yeni eklenen kısım */}
-          {showSecondStep && (
             <button
-              onClick={() => setShowSecondStep(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-red-600 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
               </svg>
             </button>
-          )}
 
           {/* İl/ilçe seçim menüsünün SAĞ ÜSTÜNE konum butonu */}
-          {showSecondStep && (
             <button
               onClick={handleFindLocation}
               className="absolute top-4 right-16 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded flex items-center gap-2"
@@ -314,7 +283,6 @@ export default function Home() {
               </svg>
               {loadingLocation ? "Bulunuyor..." : "Konumumu Bul"}
             </button>
-          )}
 
           {/* Sekmeler */}
           <div className="flex flex-wrap gap-2 border-b border-gray-200 px-4 pt-4">
@@ -338,7 +306,6 @@ export default function Home() {
             {/* Form alanları */}
             <div className="flex flex-wrap gap-4 items-center">
               <div className="flex w-full gap-4">
-                {!showSecondStep ? (
                   <>
                     <div className="flex flex-col flex-3 min-w-[150px] relative">
                       <span className="text-xs text-gray-500 mb-1">Hizmet seçiniz</span>
@@ -358,15 +325,6 @@ export default function Home() {
                         />
                       </div>
                     </div>
-                    <button
-                      onClick={() => setShowSecondStep(true)}
-                      className="flex-1 min-w-[150px] mt-5 bg-red-600 hover:bg-red-700 text-white font-semibold h-12 rounded flex items-center justify-center"
-                    >
-                      Ara <span className="ml-2">→</span>
-                    </button>
-                  </>
-                ) : (
-                  <>
                     <div className="flex flex-col flex-1 min-w-[150px]">
                       <span className="text-xs text-gray-500 mb-1">İl seçiniz</span>
                       <select
@@ -402,12 +360,12 @@ export default function Home() {
                     </div>
                     <button onClick={() => {
                       console.log("Hizmet Ara butonuna tıklandı. Seçilen ilçe:", selectedDistrict);
-                      router.push(`/results?district=${selectedDistrict}`);
+                      console.log("Seçilen hizmet:", searchValue);
+                      router.push(`/results?district=${selectedDistrict}&service=${encodeURIComponent(searchValue)}`);
                     }} className="flex-1 min-w-[150px] mt-5 bg-red-600 hover:bg-red-700 text-white font-semibold h-12 rounded flex items-center justify-center">
                       Hizmet Ara <span className="ml-2">→</span>
                     </button>
                   </>
-                )}
               </div>
             </div>
           </div>
@@ -417,13 +375,19 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-white rounded-xl flex flex-col-reverse md:flex-row items-center justify-center max-w-6xl mx-auto px-20 py-10 gap-8">
         <div className="flex-1 flex flex-col items-start justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Eng Yaqin "Sen Neredeysen Orada"</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Eng Yaqin &quot;Sen Neredeysen Orada&quot;</h1>
           <p className="text-gray-800 text-lg mb-6">İhtiyacın olan hizmete kolayca ulaş, bekleyen işlerini hallet</p>
-          <a href="/teklif-al" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition mb-4">Hemen Teklif Al</a>
+          <Link href="/teklif-al" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition mb-4">Hemen Teklif Al</Link>
         </div>
         <div className="flex-1 flex justify-center items-center">
           {/* Placeholder illustration */}
-          <img src="https://www.azes.com.tr/site/o/52071/2020/03/17f606b5d923d7307aa52307ff2757dc.png?1731466" alt="Illustration" width={350} height={250} className="w-[350px] h-auto" />
+          <Image 
+            src="https://www.azes.com.tr/site/o/52071/2020/03/17f606b5d923d7307aa52307ff2757dc.png?1731466" 
+            alt="Illustration" 
+            width={350} 
+            height={250} 
+            className="w-[350px] h-auto" 
+          />
         </div>
       </section>
 
@@ -434,73 +398,73 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {/* Kartlar */}
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/cekici.jpg" alt="Çekici" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/cekici.jpg" alt="Çekici" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Çekici</span>
               <span className="text-xs text-gray-600 mb-1">1.200 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.8 (10.000 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/lastikci.jpg" alt="Lastikçi" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/lastikci.jpg" alt="Lastikçi" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Lastikçi</span>
               <span className="text-xs text-gray-600 mb-1">950 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.7 (8.500 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/coklu-cekici.jpg" alt="Çoklu Çekici" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/coklu-cekici.jpg" alt="Çoklu Çekici" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Çoklu Çekici</span>
               <span className="text-xs text-gray-600 mb-1">500 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.6 (3.200 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/vinc.jpg" alt="Vinç" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/vinc.jpg" alt="Vinç" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Vinç</span>
               <span className="text-xs text-gray-600 mb-1">700 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.7 (5.000 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/sepetli-vinc.jpg" alt="Sepetli Vinç Kiralama" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/sepetli-vinc.jpg" alt="Sepetli Vinç Kiralama" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Sepetli Vinç Kiralama</span>
               <span className="text-xs text-gray-600 mb-1">300 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.8 (2.100 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/forklift.jpg" alt="Forklift" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/forklift.jpg" alt="Forklift" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Forklift</span>
               <span className="text-xs text-gray-600 mb-1">400 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.7 (2.800 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/oto-tamirci.jpg" alt="Oto Tamirci" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/oto-tamirci.jpg" alt="Oto Tamirci" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Oto Tamirci</span>
               <span className="text-xs text-gray-600 mb-1">1.100 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.9 (9.000 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/oto-elektrik.jpg" alt="Oto Elektrik" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/oto-elektrik.jpg" alt="Oto Elektrik" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Oto Elektrik</span>
               <span className="text-xs text-gray-600 mb-1">800 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.8 (6.500 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/aku.jpg" alt="Akü" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/aku.jpg" alt="Akü" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Akü</span>
               <span className="text-xs text-gray-600 mb-1">600 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.7 (4.000 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/oto-ekspertiz.jpg" alt="Oto Ekspertiz" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/oto-ekspertiz.jpg" alt="Oto Ekspertiz" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Oto Ekspertiz</span>
               <span className="text-xs text-gray-600 mb-1">900 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.8 (7.200 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/oto-anahtarci.jpg" alt="Oto Anahtarcı" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/oto-anahtarci.jpg" alt="Oto Anahtarcı" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Oto Anahtarcı</span>
               <span className="text-xs text-gray-600 mb-1">500 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.7 (3.800 onaylı yorum)</span>
             </div>
             <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <img src="https://i.ibb.co/0j1n6kB/evdeneve.jpg" alt="Evden Eve Nakliyat" className="rounded-md h-32 object-cover mb-3" />
+              <Image src="https://i.ibb.co/0j1n6kB/evdeneve.jpg" alt="Evden Eve Nakliyat" width={128} height={128} className="rounded-md h-32 object-cover mb-3" />
               <span className="font-semibold text-green-700 mb-1">Evden Eve Nakliyat</span>
               <span className="text-xs text-gray-600 mb-1">2.693 profesyonel</span>
               <span className="text-xs text-gray-500">⭐ 4.9 (165.393 onaylı yorum)</span>
@@ -513,33 +477,41 @@ export default function Home() {
       <section className="bg-white py-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-2 text-gray-800">Hızlı İşlemler</h2>
-          <p className="text-gray-500 mb-6">Hızlı işlemler için hizmetlerimiz</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 mb-2">
-            {/* Placeholder logos */}
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/mV2WdwVT/garaj.jpg" alt="Garaj seçimi" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Garaj seçimi</span>
+          <p className="text-gray-600">Müşterilerimizin memnuniyeti bizim için önemlidir.</p>
+        </div>
+        <div className="max-w-6xl mx-auto overflow-x-auto scrollbar-hide">
+          <div className="flex space-x-6 pb-4 px-4">
+            {/* İşletme Kartı 1 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 1" width={64} height={64} className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">ABC İnşaat</h3>
+              <p className="text-gray-600 text-sm">Büyük ölçekli inşaat projelerinde güvenilir ortağınız.</p>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/ymGzQxjX/lastikci-bul.jpg" alt="Çekici Bul" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Çekici Bul</span>
+            {/* İşletme Kartı 2 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 2" width={64} height={64} className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">XYZ Lojistik</h3>
+              <p className="text-gray-600 text-sm">Hızlı ve güvenli taşımacılık çözümleri.</p>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/NgX80MqX/cekici-bul.jpg" alt="Lastikçi Bul" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Lastikçi Bul</span>
+            {/* İşletme Kartı 3 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 3" width={64} height={64} className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Defne Restoran</h3>
+              <p className="text-gray-600 text-sm">Lezzetli yemekler ve sıcacık bir atmosfer.</p>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/rfqMywKg/uyelerimiz.jpg" alt="Sık Sorulanlar" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Sık Sorulanlar</span>
+            {/* İşletme Kartı 4 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 4" width={64} height={64} className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Elif Temizlik</h3>
+              <p className="text-gray-600 text-sm">Profesyonel ve titiz temizlik hizmetleri.</p>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/5xxHJdjB/s-sorulanlar.jpg" alt="Üyelerimiz" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Üyelerimiz</span>
+            {/* İşletme Kartı 5 */}
+            <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 5" width={64} height={64} className="rounded-full mb-4" />
+              <h3 className="font-bold text-lg mb-2 text-gray-800">Modern Yazılım</h3>
+              <p className="text-gray-600 text-sm">Yenilikçi yazılım çözümleri geliştiriyoruz.</p>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <img src="https://i.ibb.co/4gD05MTg/duyurular.jpg" alt="Duyurular" width={64} height={64} className="text-2xl" />
-              <span className="text-xs font-semibold text-gray-700">Duyurular</span>
-            </div>
+            {/* Daha fazla kart eklenebilir */}
           </div>
         </div>
       </section>
@@ -554,31 +526,31 @@ export default function Home() {
           <div className="flex space-x-6 pb-4 px-4">
             {/* İşletme Kartı 1 */}
             <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
-              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 1" width="64" className="rounded-full mb-4" />
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 1" width={64} height={64} className="rounded-full mb-4" />
               <h3 className="font-bold text-lg mb-2 text-gray-800">ABC İnşaat</h3>
               <p className="text-gray-600 text-sm">Büyük ölçekli inşaat projelerinde güvenilir ortağınız.</p>
             </div>
             {/* İşletme Kartı 2 */}
             <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
-              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 2" width="64" className="rounded-full mb-4" />
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 2" width={64} height={64} className="rounded-full mb-4" />
               <h3 className="font-bold text-lg mb-2 text-gray-800">XYZ Lojistik</h3>
               <p className="text-gray-600 text-sm">Hızlı ve güvenli taşımacılık çözümleri.</p>
             </div>
             {/* İşletme Kartı 3 */}
             <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
-              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 3" width="64" className="rounded-full mb-4" />
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 3" width={64} height={64} className="rounded-full mb-4" />
               <h3 className="font-bold text-lg mb-2 text-gray-800">Defne Restoran</h3>
               <p className="text-gray-600 text-sm">Lezzetli yemekler ve sıcacık bir atmosfer.</p>
             </div>
             {/* İşletme Kartı 4 */}
             <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
-              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 4" width="64" className="rounded-full mb-4" />
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 4" width={64} height={64} className="rounded-full mb-4" />
               <h3 className="font-bold text-lg mb-2 text-gray-800">Elif Temizlik</h3>
               <p className="text-gray-600 text-sm">Profesyonel ve titiz temizlik hizmetleri.</p>
             </div>
             {/* İşletme Kartı 5 */}
             <div className="flex-none w-64 bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center text-center">
-              <img src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 5" width="64" className="rounded-full mb-4" />
+              <Image src="https://cdn-icons-png.flaticon.com/512/1356/1356596.png" alt="İşletme Logo 5" width={64} height={64} className="rounded-full mb-4" />
               <h3 className="font-bold text-lg mb-2 text-gray-800">Modern Yazılım</h3>
               <p className="text-gray-600 text-sm">Yenilikçi yazılım çözümleri geliştiriyoruz.</p>
             </div>
@@ -597,10 +569,10 @@ export default function Home() {
           <div className="text-center md:text-left">
             <h3 className="text-xl font-bold mb-4">Hızlı Bağlantılar</h3>
             <ul className="space-y-2">
-              <li><a href="/hizmetler" className="text-gray-400 hover:text-white transition-colors">Hizmetler</a></li>
-              <li><a href="/teklif-al" className="text-gray-400 hover:text-white transition-colors">Teklif Al</a></li>
-              <li><a href="/hakkimizda" className="text-gray-400 hover:text-white transition-colors">Hakkımızda</a></li>
-              <li><a href="/iletisim" className="text-gray-400 hover:text-white transition-colors">İletişim</a></li>
+              <li><Link href="/hizmetler" className="text-gray-400 hover:text-white transition-colors">Hizmetler</Link></li>
+              <li><Link href="/teklif-al" className="text-gray-400 hover:text-white transition-colors">Teklif Al</Link></li>
+              <li><Link href="/hakkimizda" className="text-gray-400 hover:text-white transition-colors">Hakkımızda</Link></li>
+              <li><Link href="/iletisim" className="text-gray-400 hover:text-white transition-colors">İletişim</Link></li>
             </ul>
           </div>
           <div className="text-center md:text-left">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -19,6 +19,20 @@ interface Review {
   customerName: string;
   rating: number;
   comment: string;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  stats: {
+    providers: number;
+    clients: number;
+    totalServices: number;
+  };
+  providers: ServiceProvider[];
+  reviews: Review[];
 }
 
 // Dummy data for services (should ideally come from a central source/API)
@@ -89,9 +103,8 @@ const allServices = [
 ];
 
 export default function ServiceDetail() {
-  const router = useRouter();
   const params = useParams();
-  const [service, setService] = useState<any>(null);
+  const [service, setService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -107,7 +120,7 @@ export default function ServiceDetail() {
       }
       setLoading(false);
     }
-  }, [params.serviceId]);
+  }, [params]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Yükleniyor...</div>;
