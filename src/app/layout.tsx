@@ -31,10 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <nav className="w-full flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200 shadow-sm">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                <Image src={Engicon} alt="Engyaqin Logo" width={24} height={24} />
+                <Image src={Engicon} alt="Engyaqin Logo" width={24} height={24} className="object-contain" />
               </div>
               <span className="ml-2 text-xl font-bold text-gray-800">
                 <span style={{ fontFamily: "Arial, sans-serif", fontStyle: "inherit" }}>eng yaqin</span>

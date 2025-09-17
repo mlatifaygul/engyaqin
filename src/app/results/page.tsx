@@ -55,12 +55,12 @@ function ResultsContent() {
           <div key={company.id} className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
             {/* Profil Resmi ve Yorum */}
             <div className="flex flex-col items-center flex-shrink-0">
-              <Image
+            <Image
                 src={company.image}
                 alt={company.name}
                 width={96}
                 height={96}
-                className="w-24 h-24 rounded-full object-cover"
+                className="w-24 h-24 rounded-full object-contain mx-auto"
               />
               <span className="mt-2 text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
                 {company.reviewCount} Yorum

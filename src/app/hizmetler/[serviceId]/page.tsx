@@ -158,9 +158,9 @@ export default function ServiceDetail() {
         {/* Hizmet Verenler */}
         <h2 className="text-3xl font-bold text-gray-900 mb-6">Hizmet Verenler</h2>
         <div className="space-y-6 mb-12">
-          {service.providers.map((provider: ServiceProvider) => (
+        {service.providers.map((provider: ServiceProvider) => (
             <div key={provider.id} className="bg-gray-50 rounded-lg shadow-sm p-6 flex flex-col sm:flex-row items-center gap-6">
-              <Image src={provider.profileImage} alt={provider.name} width={80} height={80} className="rounded-full object-cover flex-shrink-0" />
+              <Image src={provider.profileImage} alt={provider.name} width={80} height={80} className="rounded-full object-contain flex-shrink-0 mx-auto" />
               <div className="flex-1 text-center sm:text-left">
                 <h3 className="text-xl font-semibold text-gray-800">{provider.name}</h3>
                 <p className="text-gray-600 text-sm">{provider.experienceYears} Yılı Deneyim - {provider.totalJobs} Toplam İş</p>
