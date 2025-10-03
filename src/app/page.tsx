@@ -257,7 +257,7 @@ export default function Home() {
       )}
       <section
         ref={sectionRef}
-        className="max-w-6xl mx-auto mt-0 mb-8 shadow rounded-xl relative overflow-hidden"
+        className="max-w-6xl mx-auto mt-0 mb-8 shadow rounded-xl relative overflow-hidden margin-0-auto"
       >
         {/* Opak arka plan overlay */}
         <div className="absolute inset-0 bg-white bg-opacity-80 pointer-events-none rounded-xl" />
@@ -285,10 +285,10 @@ export default function Home() {
             </button>
 
           {/* Sekmeler */}
-          <div className="flex flex-wrap gap-2 border-b border-gray-200 px-4 pt-4">
-            <button className="px-4 py-2 font-semibold border-b-2 border-red-600 text-red-600 bg-white">Yurt İçi</button>{/* 
-            <button className="px-4 py-2 font-semibold text-gray-600 hover:text-red-600">Yurt Dışı</button> */}
-          </div>
+          {/* <div className="flex flex-wrap gap-2 border-b border-gray-200 px-4 pt-4">
+            <button className="px-4 py-2 font-semibold border-b-2 border-red-600 text-red-600 bg-white">Yurt İçi</button>
+            <button className="px-4 py-2 font-semibold text-gray-600 hover:text-red-600">Yurt Dışı</button>
+          </div> */}
           {/* Bilet türü ve form */}
           <div className="px-4 py-4 flex flex-col gap-4">
             <div className="flex flex-wrap gap-4 items-center mb-2">

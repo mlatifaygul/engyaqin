@@ -1,5 +1,5 @@
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaTelegram, FaWhatsapp } from "react-icons/fa";
 
 export default function Iletisim() {
   return (
@@ -29,16 +29,16 @@ export default function Iletisim() {
         {/* WhatsApp */}
         <div className="flex flex-col items-center bg-white rounded-full shadow-lg p-6 transition hover:scale-105">
           <div className="bg-green-100 p-4 rounded-full mb-3">
-            <FaWhatsapp className="text-2xl text-green-600" />
+            <FaTelegram className="text-2xl text-blue-600" />
           </div>
-          <span className="font-semibold">WhatsApp</span>
+          <span className="font-semibold">Telegram</span>
           <a
-            href="https://wa.me/905551112233"
+            href="https://t.me/engyaqin"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-green-600 underline"
+            className="text-blue-600 underline"
           >
-            +90 555 111 22 33
+            @engyaqin
           </a>
         </div>
         {/* Adres */}
