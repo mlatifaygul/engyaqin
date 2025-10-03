@@ -255,9 +255,28 @@ export default function Home() {
           )}
         </div>
       )}
+
+      {/* Hero Section */}
+      <section className="rounded-xl flex flex-col-reverse md:flex-row items-center justify-center max-w-6xl mx-auto px-20 pt-10 gap-8">
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Eng Yaqin &quot;Sen Neredeysen Orada&quot;</h1>
+          <p className="text-gray-800 text-lg mb-6">İhtiyacın olan hizmete kolayca ulaş, bekleyen işlerini hallet</p>
+          <Link href="/teklif-al" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition mb-4">Hemen Teklif Al</Link>
+        </div>
+        {/* <div className="flex-1 flex justify-center items-center">
+          <Image 
+            src="https://www.azes.com.tr/site/o/52071/2020/03/17f606b5d923d7307aa52307ff2757dc.png?1731466" 
+            alt="Illustration" 
+            width={350} 
+            height={250} 
+            className="w-[350px] h-auto" 
+          />
+        </div> */}
+      </section>
+
       <section
         ref={sectionRef}
-        className="max-w-6xl mx-auto mt-0 mb-8 shadow rounded-xl relative overflow-hidden margin-0-auto"
+        className="max-w-5xl mx-auto mt-0 mb-8 shadow rounded-xl relative overflow-hidden margin-0-auto"
       >
         {/* Opak arka plan overlay */}
         <div className="absolute inset-0 bg-white bg-opacity-80 pointer-events-none rounded-xl" />
@@ -372,24 +391,7 @@ export default function Home() {
           {/* Alt ikonlu hizmetler */}
         </div>
       </section>
-      {/* Hero Section */}
-      <section className="bg-white rounded-xl flex flex-col-reverse md:flex-row items-center justify-center max-w-6xl mx-auto px-20 py-10 gap-8">
-        <div className="flex-1 flex flex-col items-start justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">Eng Yaqin &quot;Sen Neredeysen Orada&quot;</h1>
-          <p className="text-gray-800 text-lg mb-6">İhtiyacın olan hizmete kolayca ulaş, bekleyen işlerini hallet</p>
-          <Link href="/teklif-al" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded transition mb-4">Hemen Teklif Al</Link>
-        </div>
-        <div className="flex-1 flex justify-center items-center">
-          {/* Placeholder illustration */}
-          {/* <Image 
-            src="https://www.azes.com.tr/site/o/52071/2020/03/17f606b5d923d7307aa52307ff2757dc.png?1731466" 
-            alt="Illustration" 
-            width={350} 
-            height={250} 
-            className="w-[350px] h-auto" 
-          /> */}
-        </div>
-      </section>
+      
 
       {/* Haftanın Trend Hizmetleri */}
       <section className="bg-white py-10">
